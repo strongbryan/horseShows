@@ -1,2 +1,2 @@
 # horseShows
-Keep track of Horse Show results
+Keep track of Horse Show results test
