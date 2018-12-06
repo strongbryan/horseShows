@@ -9,7 +9,6 @@ import ShowResults from '@/components/ShowResults'
 import ShowsNew from '@/components/ShowsNew'
 import Admin from '@/components/Admin'
 import Participants from '@/components/Participants'
-import Rider from '@/components/Rider'
 import OverallResults from '@/components/OverallResults'
 import ClassResults from '@/components/ClassResults'
 import test from '@/components/test'
@@ -77,11 +76,6 @@ export default new Router({
       path: '/participants',
       name: 'Participants',
       component: Participants
-    },
-    {
-      path: '/rider',
-      name: 'Rider',
-      component: Rider
     },
     {
       path: '/overallresults',

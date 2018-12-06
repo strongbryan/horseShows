@@ -1,8 +1,8 @@
 <template>
-<div id = 'editHorseModal'>
+<div id = 'editModal'>
 <!-- modal content -->
 <md-dialog :md-active.sync="dialog" style="background-color: #ffffff;">
-  <md-dialog-title>Edit Horse</md-dialog-title>
+  <md-dialog-title>New Horse</md-dialog-title>
 
   <md-dialog-content>
     <v-form ref="form" v-model="valid" lazy-validation>
@@ -18,7 +18,7 @@
 <!-- end of modal content -->
 
 <!-- dialog button -->
-<v-btn flat icon color="cyan" @click="openDialog()"><v-icon>edit</v-icon></v-btn>
+<v-btn flat icon color="cyan" @click="openDialog()"><v-icon>add</v-icon></v-btn>
 <!-- end of button -->
 </div>
 </template>
@@ -27,15 +27,15 @@
 import HorsesService from '@/services/HorsesService'
 
 export default {
-  name: 'editHorseModal',
+  name: 'editModal',
   props: {
-    'index': Number,
-    'item': Object
+    'index': Number
   },
   data () {
     return {
       dialog: false,
       valid: true,
+      item: {},
       rules: {
         required: value => !!value || 'This field is required.',
         counter: value => value.length <= 255 || 'Max 255 characters'
@@ -45,6 +45,10 @@ export default {
   methods: {
     openDialog () {
       // console.log('open', this.item)
+      this.item = {
+        id: 0,
+        name: ''
+      }
       this.dialog = true
     },
     closeDialog () {
@@ -67,10 +71,10 @@ export default {
           id: this.item.id,
           name: this.item.name
         }
-        // console.log('edited', newInfo)
-        this.closeDialog()
-        this.$emit('horseEdited', newInfo)
-        await HorsesService.updateHorse(newInfo)
+        console.log('edited', newInfo)
+        // this.closeDialog()
+        // this.$emit('horseNew', newInfo)
+        await HorsesService.newHorse(newInfo)
       }
     }
   },

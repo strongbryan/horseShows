@@ -5,7 +5,7 @@ export default {
     return Api().get(`getAllClasses`)
   },
   updateClass (info) {
-    console.log('update class in service', info)
+    // console.log('update class in service', info)
     return Api().post(`updateClass`, info)
   }
 }

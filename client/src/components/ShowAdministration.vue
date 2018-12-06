@@ -78,7 +78,7 @@ export default {
     this.showName = this.$route.params.showName
     this.showDate = this.$route.params.showDate
     this.classes = (await this.getClassesInShow({ showId: this.$route.params.showId })).data
-    console.log(this.classes)
+    // console.log(this.classes)
     for (var i = 0; i < this.classes.length; i++) {
       this.groupQ(this.classes[i])
     }

@@ -39,14 +39,14 @@
         <div class='colShowNumber'>{{item.shownumber}}</div>
         <div class='colResult'>
           <!-- <v-select v-model="item.result" :items="places" item-text="id" item-value="id" :chips=true :height=40 :dense=true></v-select> -->
-          <select v-model="item.result" @change="changeResult(item.id, index)" style="border: 1px solid black; text-align: center; padding: 0 2px;">
+          <select v-model="item.result" @change="changeResultComment(item.id, index)" style="border: 1px solid black; text-align: center; padding: 0 2px;">
             <option value="0">Select one</option>
             <option v-for="place in places" v-bind:value="place.id" :key="place.id">{{place.id}}</option>
           </select>
         </div>
         <div class='colRider'>{{item.fname}} {{item.lname}}</div>
         <div class='colHorse'>{{item.name}}</div>
-        <div class='colComment dontprint'><input type="text" v-model="item.comments" @change="changeComment(item.id, index)" value="item.comments" size="45" placeholder="Enter your comment" /></div>
+        <div class='colComment dontprint'><input type="text" v-model="item.comments" @change="changeResultComment(item.id, index)" value="item.comments" size="45" placeholder="Enter your comment" /></div>
       </div>
     </template>
     <template v-else>
@@ -132,11 +132,14 @@ export default {
       this.dspClassName = 'Results for &mdash; ' + this.classList[this.classIndex].class
       this.loading = false
     },
-    changeResult (r, index) {
+    changeResultComment (r, index) {
       console.log('change result', r, index, this.classes[index])
-    },
-    changeComment (r, index) {
-      console.log('changeComment', r, index, this.classes[index])
+      var params = {
+        id: r,
+        newResult: this.classes[index].result,
+        newComments: this.classes[index].comments ? this.classes[index].comments : ''
+      }
+      ShowClassesService.updateClassResult(params)
     },
     addParticipant (shownumber) {
       console.log('Add to show', shownumber)

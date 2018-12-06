@@ -10,10 +10,12 @@ import materialIcons from 'material-design-icons/iconfont/material-icons.css'
 import store from '@/store/store'
 import { MdDialog } from 'vue-material/dist/components'
 import 'vue-material/dist/vue-material.min.css'
+import VeeValidate from 'Vee-Validate'
 
 Vue.config.productionTip = false
 
 Vue.use(Vuetify)
+Vue.use(VeeValidate)
 Vue.use(materialIcons)
 Vue.use(MdDialog)
 

@@ -4,7 +4,6 @@
       <v-toolbar-title>Participants</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn flat dark>Add Rider</v-btn>
         <v-btn flat dark>Add Horse</v-btn>
         <v-btn flat dark>Add Pairing</v-btn>
       </v-toolbar-items>
@@ -14,15 +13,16 @@
         Riders
         <v-spacer></v-spacer>
         <v-text-field append-icon="search" label="Search" single-line hide-details v-model="riderSearch"></v-text-field>
+        <dialogRiderNew @riderNew="onRiderNew"></dialogRiderNew>
       </v-card-title>
       <v-data-table :headers="riderHeaders" :items="riders" :search="riderSearch">
         <template slot="items" slot-scope="props">
           <td class="text-xs-left largerFont">{{ props.item.fullname }}</td>
           <td class="text-xs-right sm3 flex">
             <dialogRiderEdit :item="props.item" :index="props.item.id" @riderEdited="onRiderUpdated"></dialogRiderEdit>
-            <v-btn flat icon color="cyan" @click="deleteRider({rider: props.item.id})" small>
-              <v-icon>delete</v-icon>
-            </v-btn>
+            <dialogConfirm :message="{'message': 'Are you sure you want to delete this rider?', 'item': props.item}"
+              :index="props.item.id" @riderDeleted="onRiderDeleted">
+            </dialogConfirm>
           </td>
         </template>
         <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -35,6 +35,7 @@
         Horses
         <v-spacer></v-spacer>
         <v-text-field append-icon="search" label="Search" single-line hide-details v-model="horseSearch"></v-text-field>
+        <dialogHorseNew @horseNew="onHorseNew"></dialogHorseNew>
       </v-card-title>
       <v-data-table :headers="horsesHeaders" :items="horses" :search="horseSearch">
         <template slot="items" slot-scope="props">
@@ -85,8 +86,11 @@ import RidersService from '@/services/RidersService'
 import HorsesService from '@/services/HorsesService'
 import PairsService from '@/services/PairsService'
 import dialogRiderEdit from '@/components/dialogs/RiderEdit'
+import dialogRiderNew from '@/components/dialogs/RiderNew'
 import dialogHorseEdit from '@/components/dialogs/HorseEdit'
+import dialogHorseNew from '@/components/dialogs/HorseNew'
 import dialogPairEdit from '@/components/dialogs/PairEdit'
+import dialogConfirm from '@/components/dialogs/RiderDelete'
 
 export default {
   data () {
@@ -117,9 +121,17 @@ export default {
     }
   },
   components: {
-    dialogRiderEdit, dialogHorseEdit, dialogPairEdit
+    dialogRiderEdit, dialogRiderNew, dialogHorseEdit, dialogHorseNew, dialogPairEdit, dialogConfirm
   },
   methods: {
+    addRider  () {
+      console.log('add rider')
+    },
+    async onRiderNew () {
+      console.log('after new rider')
+      this.riderSearch = ''
+      await this.getRiders()
+    },
     onRiderUpdated (value) {
       // Change the appearance of the rider in the Riders column
       let pos = this.riders.map(function (e) { return e.id }).indexOf(value.id)
@@ -134,12 +146,23 @@ export default {
     deleteRider (rider) {
       console.log('delete rider', rider)
     },
+    async onRiderDeleted () {
+      console.log('after delete dialog closed')
+      this.riderSearch = ''
+      await this.getRiders()
+    },
+    onHorseNew () {
+      console.log('after new horse')
+    },
     onHorseUpdated (value) {
       // change the appearance of the horses name in the Horses column
       let pos = this.horses.map(function (e) { return e.id }).indexOf(value.id)
       this.$set(this.horses[pos], 'name', value.name)
       // change the appearance of the horse's name in the Pairs column
       this.changePairsAfterEdit(this.pairs, 'horse', value.id, value.name)
+    },
+    deleteHorse (pair) {
+      console.log('delete pair', pair)
     },
     deletePair (horse) {
       console.log('delete horse', horse)
@@ -158,9 +181,6 @@ export default {
     editPair (pair) {
       console.log('edit pair', pair)
     },
-    deleteHorse (pair) {
-      console.log('delete pair', pair)
-    },
     changeData (rider) {
       console.log('after call')
     },
@@ -178,12 +198,21 @@ export default {
           }
         }
       }
+    },
+    async getRiders () {
+      this.riders = (await RidersService.getAllRiders()).data
+    },
+    async getHorses () {
+      this.horses = (await HorsesService.getAllHorses()).data
+    },
+    async getPairs () {
+      this.pairs = (await PairsService.getAllPairs()).data
     }
   },
-  async mounted () {
-    this.riders = (await RidersService.getAllRiders()).data
-    this.horses = (await HorsesService.getAllHorses()).data
-    this.pairs = (await PairsService.getAllPairs()).data
+  mounted () {
+    this.getRiders()
+    this.getHorses()
+    this.getPairs()
   }
 }
 </script>

@@ -5,16 +5,16 @@ module.exports = {
   configure: function (app) {
     // Riders
     app.get('/getParticipants/:show/:class/', function (req, res) {
-      // console.log('test1', req.params)
+      console.log('test1', req.params)
       showClasses.getParticipants(req, res)
     })
     app.get('/getPlaces', function (req, res) {
       console.log('test1')
       showClasses.getPlaces(res)
     })
-    /* app.post('/updateRider', function (req, res) {
-      // console.log(req)
-      riders.updateRider(req, res)
-    }) */
+    app.post('/updateClassResult', function (req, res) {
+      // console.log('/***/', req)
+      showClasses.updateClassResult(req, res)
+    })
   }
 }

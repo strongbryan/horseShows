@@ -6,5 +6,9 @@ export default {
   },
   updateHorse (horse) {
     return Api().post(`updateHorse`, horse)
+  },
+  newHorse (horse) {
+    console.log('service new rider', horse)
+    // return Api().post(`newHorse`, horse)
   }
 }

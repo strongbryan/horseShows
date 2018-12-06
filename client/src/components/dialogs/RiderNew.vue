@@ -2,7 +2,7 @@
 <div id = 'editmodal'>
 <!-- modal content -->
 <md-dialog :md-active.sync="dialog" style="background-color: #ffffff;">
-  <md-dialog-title>Edit Rider</md-dialog-title>
+  <md-dialog-title>New Rider</md-dialog-title>
 
   <md-dialog-content>
     <v-form ref="form" v-model="valid" lazy-validation>
@@ -40,7 +40,7 @@
 <!-- end of modal content -->
 
 <!-- dialog button -->
-<v-btn flat icon color="cyan" @click="openDialog()" title="Edit this rider"><v-icon>edit</v-icon></v-btn>
+<v-btn flat icon color="cyan" @click="openDialog()" title="Add a rider"><v-icon>add</v-icon></v-btn>
 <!-- end of button -->
 </div>
 </template>
@@ -51,13 +51,13 @@ import RidersService from '@/services/RidersService'
 export default {
   name: 'editmodal',
   props: {
-    'index': Number,
-    'item': Object
+    'index': Number
   },
   data () {
     return {
       dialog: false,
       valid: true,
+      item: {},
       rules: {
         required: value => !!value || 'This field is required.',
         cell: value => !value || value.length === 12 || 'Not a valid phone number',
@@ -72,6 +72,15 @@ export default {
   methods: {
     openDialog () {
       // console.log('open', this.item)
+      this.item = {
+        id: 0,
+        age: 0,
+        cell: '',
+        fname: '',
+        fullname: '',
+        lname: '',
+        member: ''
+      }
       this.dialog = true
     },
     closeDialog () {
@@ -88,7 +97,7 @@ export default {
       this.closeDialog()
     },
     async editItem () {
-      // console.log('saving', this.item)
+      // console.log('saving', this.item.cell)
       if (this.$refs.form.validate()) {
         let newInfo = {
           id: this.item.id,
@@ -99,10 +108,10 @@ export default {
           lname: this.item.lname,
           member: this.item.member
         }
-        console.log('edited', newInfo)
+        console.log('RiderNew New Rider', newInfo)
         this.closeDialog()
-        this.$emit('riderEdited', newInfo)
-        await RidersService.updateRider(newInfo)
+        this.$emit('riderNew', newInfo)
+        await RidersService.newRider(newInfo)
       }
     }
   },
@@ -112,12 +121,21 @@ export default {
     }
   },
   mounted () {
+    this.item = {
+      id: 0,
+      age: 0,
+      cell: '',
+      fname: '',
+      fullname: '',
+      lname: '',
+      member: ''
+    }
     // console.log(this.$store.state.arrayMemberStatusOptions)
   }
 }
 </script>
 
-<style>
+<style scoped="">
   .md-dialog {
     max-width: 768px;
     width: 500px;
@@ -136,5 +154,17 @@ export default {
   }
   .v-btn__content {
     margin: 0 5px;
+  }
+  .selct {
+    border: 1px solid black;
+    text-align: center;
+    padding: 0 2px;
+    margin-top: 10px;
+  }
+  .select1 {
+    top: 245px !important;
+  }
+  .select2 {
+    top: 300px !important;
   }
 </style>

@@ -40,6 +40,36 @@ function ShowClasses () {
       })
     })
   }
+  this.updateClassResult = function (req, res) {
+    // initialize database connection
+    connection.init()
+    connection.acquire(function (err, con) {
+      if (err) console.log(err.stack)
+      /* var query = 'update showparticipants set ' +
+        'comments = \'' + req.body.newComments.replace("'", "\'") + '\', ' +
+        'result = ' + req.body.newResult + ' ' +
+        'where id = ' + req.body.id */
+      var query = 'update showparticipants set ' +
+        'comments = '
+      if (req.body.newComments.length === 0) {
+        query += 'null, '
+      } else {
+        query += '\'' + req.body.newComments.replace("'", "\\'") + '\', '
+      }
+      query += 'result = ' + req.body.newResult + ' ' +
+      'where id = ' + req.body.id
+      console.log('Update', req.body, query)
+      con.query(query, function (err, result) {
+        if (err) {
+          console.log(err.stack)
+        } else {
+          con.release()
+          // console.log(result)
+          res.send(result)
+        }
+      })
+    })
+  }
 }
 
 module.exports = new ShowClasses()

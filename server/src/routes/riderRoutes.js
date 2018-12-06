@@ -11,5 +11,21 @@ module.exports = {
       // console.log(req)
       riders.updateRider(req, res)
     })
+    app.post('/newRider', function (req, res) {
+      // console.log(req)
+      riders.newRider(req, res)
+    })
+    app.get('/getPairedRider/:rider', function (req, res) {
+      // console.log(req)
+      riders.getPairedRider(req, res)
+    })
+    app.get('/getRiderInShow/:rider', function (req, res) {
+      // console.log(req)
+      riders.getRiderInShow(req, res)
+    })
+    app.delete('/deleteRider/:rider', function (req, res) {
+      // console.log(req)
+      riders.deleteRider(req, res)
+    })
   }
 }

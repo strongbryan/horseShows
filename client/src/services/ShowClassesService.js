@@ -8,7 +8,12 @@ export default {
   getPlaces () {
     // console.log('getPlaces')
     return Api().get(`getPlaces`)
-  } /*,
+  },
+  updateClassResult (params) {
+    console.log('updateClassResult', params)
+    return Api().post(`updateClassResult`, params)
+  }
+  /*,
   getAvailableParticipants (showId) {
     // console.log('ShowId', showId)
     return Api().get(`getAvailableParticipants/${showId.showId}`)

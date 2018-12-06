@@ -8,7 +8,7 @@ export default new Vuex.Store({
   state: {
     showYear: 0,
     arrayMemberStatusOptions: ['Junior', 'Adult', 'Jack Benny'],
-    arrayMemberOptions: [{val: '', text: 'Select...'}, {val: 'M', text: 'Member'}, {val: 'N', text: 'Non-Member'}],
+    arrayMemberOptions: [{value: 'M', text: 'Member'}, {value: 'N', text: 'Non-Member'}],
     arrayDeclaredDivisionsJumper: [{id: 2, division: 'Open'}, {id: 1, division: 'Puddle'}],
     arrayDeclaredDivisions: [{id: 6, division: 'Adult'},
       {id: 5, division: 'Childrens'},
