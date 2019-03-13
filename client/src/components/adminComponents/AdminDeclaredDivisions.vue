@@ -3,11 +3,11 @@
     <v-flex>
       <div class="white elevation-2">
         <v-toolbar flat="" dense="" dark="" class="cyan">
-          <v-toolbar-title>Declared Division Types</v-toolbar-title>
+          <v-toolbar-title>Show Types</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-text-field append-icon="search" label="Search" single-line="" hide-details="" v-model="search"></v-text-field>
           <v-toolbar-items>
-            <v-btn flat="" dark="" @click="navigateTo({name: 'DivisionsNew'})">New Declared Division</v-btn>
+            <v-btn flat="" dark="" @click="navigateTo({name: 'DivisionsNew'})">New Show Type</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <dialogDeclaredDivisionEdit :visible="showDeclaredDivisionEdit" @declaredDivisionClose="showDeclaredDivisionEdit=false"

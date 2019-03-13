@@ -1,76 +1,78 @@
 <template>
-<v-layout row="" justify-center="">
-  <v-dialog v-model="show" max-width="500px">
-    <v-card>
-      <v-card-title primary-title="">Edit Class</v-card-title>
-      <v-card-text>
-        <form>
-          <v-text-field label="Class" v-model="cClass" />
-        </form>
-      </v-card-text>
-      <v-card-actions>
-        <v-btn color="green" flat="" @click="save()">Save</v-btn>
-        <v-btn color="red" flat="" @click.stop="cancel()">Cancel</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-</v-layout>
+<div id = 'edit'>
+<!-- modal content -->
+<md-dialog :md-active.sync="dialog" style="background-color: #ffffff;">
+  <md-dialog-title>Edit Class</md-dialog-title>
+
+  <md-dialog-content>
+    <v-form ref="form" v-model="valid" lazy-validation>
+      <v-text-field label="Class Name" v-model="item.class" :rules="[rules.required, rules.counter]"></v-text-field>
+    </v-form>
+  </md-dialog-content>
+
+  <md-dialog-actions>
+    <v-btn class="cyan" dark @click="editItem()">Save</v-btn>
+    <v-btn class="cyan" dark @click="cancel()">Cancel</v-btn>
+  </md-dialog-actions>
+</md-dialog>
+<!-- end of modal content -->
+
+<!-- dialog button -->
+<v-btn flat icon color="cyan" @click="openDialog()"><v-icon>edit</v-icon></v-btn>
+<!-- end of button -->
+</div>
 </template>
 
 <script>
-import ClassesService from '@/services/ClassesService'
+import Service from '@/services/ClassesService'
 
 export default {
-  props: ['visible'],
+  name: 'edit',
+  props: {
+    'index': Number,
+    'item': Object
+  },
   data () {
     return {
-      dClass: ''
+      dialog: false,
+      valid: true,
+      copy: Object.assign({}, this.item), // shallow copy of the item
+      rules: {
+        required: value => !!value || 'This field is required.',
+        counter: value => value.length <= 255 || 'Max 255 characters'
+      }
     }
   },
   methods: {
-    async save () {
-      const newClass = {
-        id: this.cId,
-        class: this.dClass.length === 0 ? this.cClass : this.dClass
-      }
-      // console.log('saving', newClass)
-      this.$store.dispatch('setEditObject', newClass)
-      this.$emit('showClassesEdited', newClass)
-      await ClassesService.updateClass(newClass)
-      this.resetData()
-      this.show = false
+    openDialog () {
+      // console.log('open', this.item)
+      this.dialog = true
+    },
+    closeDialog () {
+      this.dialog = false
+    },
+    onOpen () {
+      console.log('Opened')
+    },
+    onClose (type) {
+      console.log('Closed', type)
     },
     cancel () {
-      this.show = false
+      // console.log('close')
+      this.item.class = this.copy.class // restore the original name from the copy taken in data
+      this.closeDialog()
     },
-    resetData () {
-      this.dClass = ''
-    }
-  },
-  computed: {
-    show: {
-      get () {
-        return this.visible
-      },
-      set (value) {
-        if (!value) {
-          this.$emit('showClassesClose')
+    async editItem () {
+      // console.log('saving', this.item)
+      if (this.$refs.form.validate()) {
+        let newInfo = {
+          id: this.item.id,
+          class: this.item.class
         }
-      }
-    },
-    cClass: {
-      get () {
-        return this.$store.state.editObject.class
-      },
-      set (value) {
-        this.dClass = value
-      }
-    },
-    cId: {
-      get () {
-        return this.$store.state.editObject.id
-      },
-      set (value) {
+        // console.log('edited', newInfo)
+        this.closeDialog()
+        await Service.updateClass(newInfo)
+        this.$emit('classEdited', newInfo)
       }
     }
   }

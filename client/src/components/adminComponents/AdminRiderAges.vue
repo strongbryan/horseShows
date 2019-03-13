@@ -6,10 +6,9 @@
           <v-toolbar-title>Rider Ages</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn flat="" dark="" @click="navigateTo({name: 'ShowTypesNew'})">New Rider Age</v-btn>
+            <dialogAdd @RiderAgeNew="onNew"></dialogAdd>
           </v-toolbar-items>
         </v-toolbar>
-        <dialogRiderAgesEdit :visible="showRiderAgeEdit" @riderAgeClose="showRiderAgeEdit=false" @riderAgeEdited="onRiderAgeUpdated" />
         <v-data-table
           :headers="headers"
           :items="riderAges"
@@ -18,10 +17,12 @@
           <template slot="items" slot-scope="props">
             <td class="text-xs-left largerFont">{{ props.item.age }}</td>
             <td class="text-xs-right">
-              <v-btn flat="" icon="" color="cyan" @click="edit({riderAge: props.item})" small="">
-                <v-icon>edit</v-icon>
-              </v-btn>
-              <v-icon>delete</v-icon>
+              <dialogEdit :item="props.item" :index="props.item.id" @riderAgeEdited="onRiderAgeUpdated"></dialogEdit>
+            </td>
+            <td class="text-xs-right">
+              <dialogDelete :message="{'message': 'Are you sure you want to delete this Rider Age?', 'item': props.item}"
+                :index="props.item.id" @riderAgeDelete="onDelete">
+              </dialogDelete>
             </td>
           </template>
         </v-data-table>
@@ -32,7 +33,9 @@
 
 <script>
 import RiderAgesService from '@/services/RiderAgesService'
-import dialogRiderAgesEdit from '@/components/adminComponents/dialogs/RiderAgesEdit'
+import dialogAdd from '@/components/adminComponents/dialogs/RiderAgesAdd'
+import dialogEdit from '@/components/adminComponents/dialogs/RiderAgesEdit'
+import dialogDelete from '@/components/adminComponents/dialogs/RiderAgesDelete'
 export default {
   data () {
     return {
@@ -43,7 +46,8 @@ export default {
       },
       headers: [
         { value: 'age', text: 'Rider Ages', align: 'left', sortable: false, width: '300', class: ['largerFont'] },
-        { value: '', text: 'Actions', align: 'right', sortable: false, width: '200' }
+        { value: '', text: 'Actions', align: 'right', sortable: false, width: '1%' },
+        { value: '', text: '', align: 'right', sortable: false, width: '1%' }
       ]
     }
   },
@@ -57,13 +61,21 @@ export default {
       let pos = this.riderAges.map(function (e) { return e.id }).indexOf(value.id)
       this.riderAges[pos].age = value.age
       this.$set(this.riderAges[pos], 'age', value.age)
+    },
+    onDelete (value) {
+      let pos = this.riderAges.map(function (e) { return e.id }).indexOf(value)
+      this.riderAges.splice(pos, 1)
+    },
+    async onNew (value) {
+      // console.log('main returned value', value)
+      this.riderAges = (await RiderAgesService.getAllRiderAges({year: this.$store.state.showYear})).data
     }
   },
   async mounted () {
     this.riderAges = (await RiderAgesService.getAllRiderAges({year: this.$store.state.showYear})).data
   },
   components: {
-    dialogRiderAgesEdit
+    dialogAdd, dialogEdit, dialogDelete
   }
 }
 </script>

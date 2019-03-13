@@ -41,6 +41,43 @@ function ShowTypes () {
       })
     })
   }
+  this.newShowType = function (req, res) {
+    // initialize database connection
+    // console.log('newJumperDivisionType', req.body)
+    connection.init()
+    // get id as parameter to passing into query and return filter data
+    connection.acquire(function (err, con) {
+      if (err) console.log(err.stack)
+      var query = 'insert into showtypes (type, year) values (' +
+      '\'' + req.body.type + '\', ' + req.body.year +
+        ' )'
+      // console.log(query)
+      con.query(query, function (err, result) {
+        if (err) console.log('Error', err.stack)
+        con.release()
+        res.send(result)
+      })
+    })
+  }
+  this.deleteShowType = function (req, res) {
+    // initialize database connection
+    connection.init()
+    // console.log('Update', req.params)
+    connection.acquire(function (err, con) {
+      if (err) console.log(err.stack)
+      var query = 'delete from showtypes  ' +
+        'where id = ' + req.params.id
+      con.query(query, function (err, result) {
+        if (err) {
+          console.log(err.stack)
+        } else {
+          con.release()
+          // console.log(result)
+          res.send(result)
+        }
+      })
+    })
+  }
 }
 
 module.exports = new ShowTypes()

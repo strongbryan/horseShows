@@ -10,5 +10,25 @@ module.exports = {
     app.post('/updateHorse', function (req, res) {
       horses.updateHorse(req, res)
     })
+    app.get('/getOneHorse/:horseName/', function (req, res) {
+      // console.log(req.params)
+      horses.getOneHorse(req, res)
+    })
+    app.post('/newHorse', function (req, res) {
+      // console.log(req)
+      horses.newHorse(req, res)
+    })
+    app.get('/getPairedHorse/:horse', function (req, res) {
+      // console.log(req)
+      horses.getPairedHorse(req, res)
+    })
+    app.get('/getHorseInShow/:horse', function (req, res) {
+      // console.log(req)
+      horses.getHorseInShow(req, res)
+    })
+    app.delete('/deleteHorse/:horse', function (req, res) {
+      // console.log(req)
+      horses.deleteHorse(req, res)
+    })
   }
 }

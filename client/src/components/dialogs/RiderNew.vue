@@ -72,6 +72,7 @@ export default {
   methods: {
     openDialog () {
       // console.log('open', this.item)
+      this.checkHorseExists = false
       this.item = {
         id: 0,
         age: 0,
@@ -108,10 +109,10 @@ export default {
           lname: this.item.lname,
           member: this.item.member
         }
-        console.log('RiderNew New Rider', newInfo)
+        // console.log('RiderNew New Rider', newInfo)
         this.closeDialog()
-        this.$emit('riderNew', newInfo)
         await RidersService.newRider(newInfo)
+        this.$emit('riderNew', newInfo)
       }
     }
   },

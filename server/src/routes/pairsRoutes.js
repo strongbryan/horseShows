@@ -10,5 +10,13 @@ module.exports = {
     app.post('/updatePair', function (req, res) {
       pairs.updatePair(req, res)
     })
+    app.get('/getPairInShow/:rider', function (req, res) {
+      // console.log(req)
+      pairs.getPairInShow(req, res)
+    })
+    app.delete('/deletePair/:rider', function (req, res) {
+      // console.log(req)
+      pairs.deleteRider(req, res)
+    })
   }
 }

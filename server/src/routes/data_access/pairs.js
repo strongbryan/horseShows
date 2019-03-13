@@ -50,6 +50,49 @@ function Pairs () {
       })
     })
   }
+  this.getPairInShow = function (req, res) {
+    // initialize database connection
+    connection.init()
+    // console.log('Update', req.params)
+    connection.acquire(function (err, con) {
+      if (err) console.log(err.stack)
+      var query = 'SELECT * FROM horses.showparticipants ' +
+        'where shownumber in (' +
+        'select shownumber from pairs ' +
+        'where id = ' + req.params.rider +
+        ') ' +
+        'and registered = 1'
+      // console.log(query)
+      con.query(query, function (err, result) {
+        if (err) {
+          console.log(err.stack)
+        } else {
+          con.release()
+          // console.log(result)
+          res.send(result)
+        }
+      })
+    })
+  }
+  this.deletePair = function (req, res) {
+    // initialize database connection
+    connection.init()
+    // console.log('Update', req.params)
+    connection.acquire(function (err, con) {
+      if (err) console.log(err.stack)
+      var query = 'delete from pairs  ' +
+        'where id = ' + req.params.pair
+      con.query(query, function (err, result) {
+        if (err) {
+          console.log(err.stack)
+        } else {
+          con.release()
+          // console.log(result)
+          res.send(result)
+        }
+      })
+    })
+  }
 }
 
 module.exports = new Pairs()

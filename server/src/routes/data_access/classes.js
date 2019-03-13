@@ -8,7 +8,8 @@ function Class () {
     // get id as parameter to passing into query and return filter data
     connection.acquire(function (err, con) {
       if (err) console.log(err.stack)
-      var query = 'select c.id, division, class, classNumber, hunter, western, jumpers, d.name divName ' +
+      var query = 'select c.id, division, class, classNumber, hunter, western, jumpers, ' +
+        'case when division is null then \'UNASSIGNED\' else d.name end divName ' +
         'from classes c ' +
         'join divisions d on d.id = c.division ' +
         'order by division, class'

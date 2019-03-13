@@ -6,32 +6,37 @@
 
     <md-dialog-content>
       <form>
-        <label>Horse Name</label>
 <!-- :custom-text="codeAndNameAndDesc" -->
-        <model-list-select
-          v-model="pairHorse"
-          :list="horses"
-          option-value="id"
-          option-text="name">
-        </model-list-select>
-        <label>Rider Name</label>
-        <model-list-select
-          v-model="pairRider"
-          :list="riders"
-          option-value="id"
-          option-text="fullname">
-        </model-list-select>
+        <v-select v-model="item.horse" :items="horses"
+          item-text="name"
+          item-value="id"
+          :persistent-hint=true
+          placeholder="Select..."
+          :menu-props="{maxHeight: 200}"
+          label="Horse Name">
+        </v-select>
+        <v-select v-model="item.rider" :items="riders"
+          item-text="fullname"
+          item-value="id"
+          :persistent-hint=true
+          placeholder="Select..."
+          :menu-props="{maxHeight: 200}"
+          label="Rider Name">
+        </v-select>
         <v-text-field label="Show Number" v-model="item.shownumber"></v-text-field>
         <v-select v-model="item.declaredDiv" :items="westernDivs"
           item-text="division"
           item-value="id"
           :persistent-hint=true
+          placeholder="Select..."
+          :menu-props="{maxHeight: 200}"
           label="Declared Division: Hunter">
         </v-select>
         <v-select v-model="item.declaredDivP" :items="pleasureDivs"
           item-text="division"
           item-value="id"
           :persistent-hint=true
+          :menu-props="{maxHeight: 200}"
           label="Declared Division: Pleasure">
         </v-select>
         <v-select v-model="item.declaredDivJumper" :items="jumperDivs"
@@ -57,7 +62,6 @@
   </template>
 
 <script>
-import {ModelListSelect} from 'vue-search-select'
 import RidersService from '@/services/RidersService'
 import HorsesService from '@/services/HorsesService'
 import PairsService from '@/services/PairsService'
@@ -83,7 +87,7 @@ export default {
       this.riders = (await RidersService.getAllRiders()).data
       this.horses = (await HorsesService.getAllHorses()).data
       this.dialog = true
-      // console.log('open', this.item.id, this.item.rider, this.item.horse)
+      console.log('open', this.item)
     },
     codeAndNameAndDesc (item) {
       console.log(item)
@@ -119,33 +123,16 @@ export default {
         declaredDivP: this.item.declaredDivP
       }
       this.closeDialog()
-      this.$emit('pairEdited', newInfo)
       await PairsService.updatePair(newInfo)
+      this.$emit('pairEdited', newInfo)
     }
   },
   computed: {
-    pairRider: {
-      get: function () {
-        return parseInt(this.item.rider)
-      },
-      set: function (newValue) {
-        this.item.rider = newValue
-      }
-    },
-    pairHorse: {
-      get: function () {
-        return parseInt(this.item.horse)
-      },
-      set: function (newValue) {
-        this.item.horse = newValue
-      }
-    }
   },
   mounted () {
     // console.log(this.$store.state.arrayMemberStatusOptions)
   },
   components: {
-    ModelListSelect
   }
 }
 </script>

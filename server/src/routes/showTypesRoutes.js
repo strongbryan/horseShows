@@ -12,5 +12,13 @@ module.exports = {
       console.log('showTypesRoutes', req.body)
       showtypes.updateShowType(req, res)
     })
+    app.post('/newShowType', function (req, res) {
+      // console.log(req)
+      showtypes.newShowType(req, res)
+    })
+    app.delete('/deleteShowType/:id', function (req, res) {
+      // console.log('api delete show type', req)
+      showtypes.deleteShowType(req, res)
+    })
   }
 }

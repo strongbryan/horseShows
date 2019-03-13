@@ -10,14 +10,18 @@
             <v-btn flat dark @click="navigateTo({name: 'ClassNew'})">New Class</v-btn>
           </v-toolbar-items>
         </v-toolbar>
-        <dialogClassesEdit :visible="showClassesEdit" @showClassesClose="showClassesEdit=false" @showClassesEdited="onClassUpdated" />
+        <!-- <dialogClassesEdit :visible="showClassesEdit" @showClassesClose="showClassesEdit=false" @showClassesEdited="onClassUpdated" /> -->
         <v-data-table :headers="headers" :items="classes" :search="classesSearch" class="elevation-1">
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left largerFont">{{ props.item.divName }}: {{ props.item.class }}</td>
+            <td class="text-xs-left largerFont">{{ props.item.divName }}</td>
+            <td class="text-xs-left largerFont">{{ props.item.class }}</td>
             <td class="text-xs-right">
-              <v-btn flat icon color="cyan" @click="edit({class: props.item})" small>
+              <dialogEdit :item="props.item" :index="props.item.id" @classEdited="onUpdated"></dialogEdit>
+              <!-- <v-btn flat icon color="cyan" @click="edit({class: props.item})" small>
                 <v-icon>edit</v-icon>
-              </v-btn>
+              </v-btn> -->
+            </td>
+            <td class="text-xs-right">
               <v-icon>delete</v-icon>
             </td>
           </template>
@@ -32,7 +36,7 @@
 
 <script>
 import ClassesService from '@/services/ClassesService'
-import dialogClassesEdit from '@/components/adminComponents/dialogs/ClassesEdit'
+import dialogEdit from '@/components/adminComponents/dialogs/ClassesEdit'
 
 export default {
   data () {
@@ -44,8 +48,10 @@ export default {
         sortBy: 'name'
       },
       headers: [
-        { value: 'class', text: 'Division : Class Name', align: 'left', sortable: false, width: '700', class: ['largerFont'] },
-        { value: '', text: 'Actions', align: 'right', sortable: false }
+        { value: 'class', text: 'Division', align: 'left', sortable: false, width: '400', class: ['largerFont'] },
+        { value: 'class', text: 'Class Name', align: 'left', sortable: false, width: '300', class: ['largerFont'] },
+        { value: '', text: 'Actions', align: 'right', sortable: false, width: '1%' },
+        { value: '', text: '', align: 'right', sortable: false, width: '1%' }
       ]
     }
   },
@@ -54,7 +60,7 @@ export default {
       this.$store.dispatch('setEditObject', row.class)
       this.showClassesEdit = true
     },
-    onClassUpdated (value) {
+    onUpdated (value) {
       let pos = this.classes.map(function (e) { return e.id }).indexOf(value.id)
       // console.log('test', this.classes[pos])
       this.classes[pos].class = value.class
@@ -66,7 +72,7 @@ export default {
     // console.log(this.classes)
   },
   components: {
-    dialogClassesEdit
+    dialogEdit
   }
 }
 </script>

@@ -1,29 +1,29 @@
 <template>
-<div id = 'editmodal'>
+<div id = 'deleteDDJmodal'>
 <!-- modal content -->
 <md-dialog :md-active.sync="dialog" style="background-color: #ffffff;">
-  <md-dialog-title>{{message.item.fullname}}<br><br>{{message.message}}</md-dialog-title>
+  <md-dialog-title>{{message.item.division}}<br><br>{{message.message}}</md-dialog-title>
 
   <md-dialog-content></md-dialog-content>
 
   <md-dialog-actions>
-    <v-btn class="cyan" dark @click="deleteRider()">Delete</v-btn>
+    <v-btn v-if="dispSaveBtn" class="cyan" dark @click="deleteDiv()">Delete</v-btn>
     <v-btn class="cyan" dark @click="cancel()">Cancel</v-btn>
   </md-dialog-actions>
 </md-dialog>
 <!-- end of modal content -->
 
 <!-- dialog button -->
-<v-btn flat icon color="cyan" @click="openDialog()" title="Delete this rider"><v-icon>delete</v-icon></v-btn>
+<v-btn flat icon color="cyan" @click="openDialog()" title="Delete this Pairing"><v-icon>delete</v-icon></v-btn>
 <!-- end of button -->
 </div>
 </template>
 
 <script>
-import RidersService from '@/services/RidersService'
+import declaredDivService from '@/services/DeclaredDivisionsJumpersService'
 
 export default {
-  name: 'editmodal',
+  name: 'deleteDDJmodal',
   props: {
     'index': Number,
     'message': Object
@@ -32,15 +32,7 @@ export default {
     return {
       dialog: false,
       valid: true,
-      item: {
-        id: 0,
-        age: 0,
-        cell: '',
-        fname: '',
-        fullname: '',
-        lname: '',
-        member: ''
-      },
+      dispSaveBtn: true,
       rules: {
         required: value => !!value || 'This field is required.',
         cell: value => !value || value.length === 12 || 'Not a valid phone number',
@@ -54,13 +46,12 @@ export default {
   },
   methods: {
     async openDialog () {
-      // console.log('open', this.item, this.index)
-      var pairs = (await RidersService.getPairedRider({id: this.index})).data
-      var inShows = (await RidersService.getRiderInShow({id: this.index})).data
-      // console.log(pairs)
-      // console.log(inShows)
-      if (pairs.length > 0 || inShows.length > 0) { // allow delete
-        this.message.message = 'This rider cannot be deleted: Paired with a horse or has been in a show.'
+      // console.log('open', this.message, this.index)
+      var inUse = (await declaredDivService.getPairsUsingJumperDivisionType({id: this.index})).data
+      // console.log('inUse', inUse)
+      if (inUse.length > 0) { // allow delete
+        this.dispSaveBtn = false
+        this.message.message = 'Cannot delete this Declared Division Type. It has been used by a pairing.'
       }
       this.dialog = true
     },
@@ -77,30 +68,18 @@ export default {
       // console.log('close')
       this.closeDialog()
     },
-    async deleteRider () {
-      // console.log('saving', this.item.cell)
-      // console.log('Rider Delete')
+    async deleteDiv () {
+      // console.log('deleting', this.index)
       this.closeDialog()
-      await RidersService.deleteRider({id: this.index})
-      this.$emit('riderDeleted', this.index)
+      // await
+      declaredDivService.deleteDivision({id: this.index})
+      this.$emit('divJumperDeleted', this.index)
     }
   },
   computed: {
-    cFullname () {
-      return this.item.lname + ', ' + this.item.fname
-    }
   },
   mounted () {
-    this.item = {
-      id: 0,
-      age: 0,
-      cell: '',
-      fname: '',
-      fullname: '',
-      lname: '',
-      member: ''
-    }
-    // console.log(this.$store.state.arrayMemberStatusOptions)
+    this.dispSaveBtn = true
   }
 }
 </script>
@@ -124,17 +103,5 @@ export default {
   }
   .v-btn__content {
     margin: 0 5px;
-  }
-  .selct {
-    border: 1px solid black;
-    text-align: center;
-    padding: 0 2px;
-    margin-top: 10px;
-  }
-  .select1 {
-    top: 245px !important;
-  }
-  .select2 {
-    top: 300px !important;
   }
 </style>

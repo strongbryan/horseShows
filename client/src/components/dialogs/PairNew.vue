@@ -2,29 +2,51 @@
 <div id = 'editmodal'>
 <!-- modal content -->
 <md-dialog :md-active.sync="dialog" style="background-color: #ffffff;">
-  <md-dialog-title>Edit Rider</md-dialog-title>
+  <md-dialog-title>New Pairing</md-dialog-title>
 
   <md-dialog-content>
     <v-form ref="form" v-model="valid" lazy-validation>
-      <v-text-field label="First Name" v-model="item.fname" type="text" name="fname" :rules="[rules.required, rules.counter]"></v-text-field>
-      <v-text-field label="Last Name" v-model="item.lname" :rules="[rules.required, rules.counter]"></v-text-field>
       <v-autocomplete
         ref="item.age"
         :rules="[rules.required]"
         :items="this.$store.state.arrayMemberStatusOptions"
         v-model="item.age"
-        label="Age"
+        label="Horse"
         placeholder="Select..."
         :menu-props="{contentClass: 'select1'}"
         required
       ></v-autocomplete>
-      <v-text-field label="Cell Number" v-model="item.cell" mask="###-###-####" return-masked-value :rules="[rules.cell]"></v-text-field><!-- :rules="[() => !!item.cell || 'This field is required']" -->
       <v-autocomplete
         ref="item.member"
         :rules="[rules.required]"
         :items="this.$store.state.arrayMemberOptions"
         v-model="item.member"
-        label="Member"
+        label="Rider"
+        placeholder="Select..."
+        :menu-props="{contentClass: 'select2'}"
+        required
+      ></v-autocomplete>
+      <v-text-field label="Show Number" v-model="item.fname" type="text" name="fname" :rules="[rules.required, rules.counter]"></v-text-field>
+      <!--
+        v-model="select"
+        :hint="`${select.name}, ${select.id}`"
+        persistent-hint
+        return-object
+      -->
+      <v-select
+        :items="divisions"
+        item-text="name"
+        item-value="id"
+        label="Hunter/Western Declared Division"
+        :rules="[rules.required]"
+        required
+      ></v-select>
+      <v-autocomplete
+        ref="item.member"
+        :rules="[rules.required]"
+        :items="this.$store.state.arrayMemberOptions"
+        v-model="item.member"
+        label="Jumper Declared Division"
         placeholder="Select..."
         :menu-props="{contentClass: 'select2'}"
         required
@@ -40,24 +62,27 @@
 <!-- end of modal content -->
 
 <!-- dialog button -->
-<v-btn flat icon color="cyan" @click="openDialog()" title="Edit this rider"><v-icon>edit</v-icon></v-btn>
+<v-btn flat icon color="cyan" @click="openDialog()" title="Add a rider"><v-icon>add</v-icon></v-btn>
 <!-- end of button -->
 </div>
 </template>
 
 <script>
 import RidersService from '@/services/RidersService'
+import DeclaredDivisionsService from '@/services/DeclaredDivisionsService'
 
 export default {
   name: 'editmodal',
   props: {
-    'index': Number,
-    'item': Object
+    'index': Number
   },
   data () {
     return {
+      select: { name: 'Florida', id: 'FL' },
       dialog: false,
       valid: true,
+      item: {},
+      divisions: [],
       rules: {
         required: value => !!value || 'This field is required.',
         cell: value => !value || value.length === 12 || 'Not a valid phone number',
@@ -70,8 +95,21 @@ export default {
     }
   },
   methods: {
-    openDialog () {
+    async openDialog () {
       // console.log('open', this.item)
+      this.checkHorseExists = false
+      this.divisions = (await DeclaredDivisionsService.getAllDeclaredDivisions({year: this.$store.state.showYear})).data
+      console.log(this.divisions)
+      console.log(this.$store.state.arrayMemberOptions)
+      this.item = {
+        id: 0,
+        age: 0,
+        cell: '',
+        fname: '',
+        fullname: '',
+        lname: '',
+        member: ''
+      }
       this.dialog = true
     },
     closeDialog () {
@@ -88,7 +126,7 @@ export default {
       this.closeDialog()
     },
     async editItem () {
-      // console.log('saving', this.item)
+      // console.log('saving', this.item.cell)
       if (this.$refs.form.validate()) {
         let newInfo = {
           id: this.item.id,
@@ -99,10 +137,10 @@ export default {
           lname: this.item.lname,
           member: this.item.member
         }
-        // console.log('edited', newInfo)
+        // console.log('RiderNew New Rider', newInfo)
         this.closeDialog()
-        await RidersService.updateRider(newInfo)
-        this.$emit('riderEdited', newInfo)
+        await RidersService.newRider(newInfo)
+        this.$emit('riderNew', newInfo)
       }
     }
   },
@@ -112,12 +150,21 @@ export default {
     }
   },
   mounted () {
+    this.item = {
+      id: 0,
+      age: 0,
+      cell: '',
+      fname: '',
+      fullname: '',
+      lname: '',
+      member: ''
+    }
     // console.log(this.$store.state.arrayMemberStatusOptions)
   }
 }
 </script>
 
-<style>
+<style scoped="">
   .md-dialog {
     max-width: 768px;
     width: 500px;
@@ -136,5 +183,17 @@ export default {
   }
   .v-btn__content {
     margin: 0 5px;
+  }
+  .selct {
+    border: 1px solid black;
+    text-align: center;
+    padding: 0 2px;
+    margin-top: 10px;
+  }
+  .select1 {
+    top: 245px !important;
+  }
+  .select2 {
+    top: 300px !important;
   }
 </style>

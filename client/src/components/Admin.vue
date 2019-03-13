@@ -6,27 +6,28 @@
     <div class="col1">
       <v-btn color="cyan" dark class="buttons" @click="currentView='AdminChooseYear'" >
         Change Year
-      </v-btn><br />
+      </v-btn>
+      <v-btn color="cyan" dark class="buttons" @click="currentView='AdminShowTypes'">
+        Show Types
+      </v-btn>
       <v-btn color="cyan" dark class="buttons" @click="currentView='AdminDeclaredDivisions'">
+        Declared<br>Divisions
+      </v-btn>
+      <v-btn color="cyan" dark class="buttons" @click="currentView='AdminDeclaredJumperDivisions'">
         Declared<br />Division Types
       </v-btn>
-      <br />
       <v-btn color="cyan" dark class="buttons" @click="currentView='AdminDivisions'">
         Divisions
-      </v-btn><br />
-      <v-btn color="cyan" dark class="buttons" @click="currentView='AdminAssignDeclaredDivisions'">
-        Assign Declared<br />Divisions
       </v-btn>
-      <br />
+      <v-btn color="cyan" dark class="buttons" @click="currentView='AdminAssignDeclaredDivisions'">
+        Assign Divisions<br />To Shows
+      </v-btn>
       <v-btn color="cyan" dark class="buttons" @click="currentView='AdminClasses'">
         Classes
       </v-btn>
       <v-btn color="cyan" dark class="buttons" @click="currentView='AdminRiderAges'">
         Rider Ages
-      </v-btn><br />
-      <v-btn color="cyan" dark class="buttons" @click="currentView='AdminShowTypes'">
-        Show Types
-      </v-btn><br />
+      </v-btn>
     </div>
     <div class="col3">
       <component :is="currentView" transition="fade" transition-mode="out-in">
@@ -76,6 +77,7 @@ import AdminClearPairs from '@/components/adminComponents/AdminClearPairs'
 import AdminClearRiders from '@/components/adminComponents/AdminClearRiders'
 import AdminDivisions from '@/components/adminComponents/AdminDivisions'
 import AdminDeclaredDivisions from '@/components/adminComponents/AdminDeclaredDivisions'
+import AdminDeclaredJumperDivisions from '@/components/adminComponents/AdminDeclaredJumperDivisions'
 import AdminAssignDeclaredDivisions from '@/components/adminComponents/AdminAssignDeclaredDivisions'
 import AdminRiderAges from '@/components/adminComponents/AdminRiderAges'
 import AdminShowTypes from '@/components/adminComponents/AdminShowTypes'
@@ -88,6 +90,7 @@ export default {
     AdminClearPairs,
     AdminDivisions,
     AdminDeclaredDivisions,
+    AdminDeclaredJumperDivisions,
     AdminAssignDeclaredDivisions,
     AdminClearRiders,
     AdminRiderAges,

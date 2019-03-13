@@ -42,19 +42,6 @@
                   </v-btn>
                 </div>
               </td>
-              <!-- <td class="text-xs-right">
-                <v-btn class="cyan" dark
-                  :to="{ name: 'ShowAdministration',
-                  params: {showId: props.item.id, showName: props.item.showname, showDate: props.item.displaydate} }">
-                  Show
-                </v-btn>
-                <v-btn class="cyan" dark
-                  :to="{ name: 'ShowParticipants',
-                  params: {showId: props.item.id, showName: props.item.showname, showDate: props.item.displaydate} }">
-                  Participants
-                </v-btn>
-                <v-btn class="cyan" dark>Assign</v-btn>
-              </td> -->
             </template>
             <v-alert slot="no-results" :value="true" color="error" icon="warning">
               Your search for "{{ availableSearch }}" found no results.

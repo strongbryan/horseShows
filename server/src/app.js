@@ -36,6 +36,9 @@ divisionRoutes.configure(app)
 var DeclaredDivisionRoutes = require('./routes/decDivisionRoutes')
 DeclaredDivisionRoutes.configure(app)
 
+var DeclaredDivisionJumperRoutes = require('./routes/decDivisionJumperRoutes')
+DeclaredDivisionJumperRoutes.configure(app)
+
 var showTypesRoutes = require('./routes/showTypesRoutes')
 showTypesRoutes.configure(app)
 

@@ -41,6 +41,64 @@ function RiderAges () {
       })
     })
   }
+  this.getOneRiderAge = function (req, res) {
+    // initialize database connection
+    // console.log('data access', year)
+    connection.init()
+    connection.acquire(function (err, con) {
+      if (err) console.log(err.stack)
+      var q = 'SELECT id FROM agetypes ' +
+        'where age = \'' + req.params.age + '\' ' +
+        'and year = ' + req.params.year
+      // console.log(req.params, q)
+      con.query(q, function (err, result) {
+        if (err) console.log(err.stack)
+        con.release()
+        // console.log(result)
+        res.send(result)
+      })
+    })
+  }
+  this.deleteRiderAge = function (req, res) {
+    // initialize database connection
+    connection.init()
+    // console.log('Update', req.params)
+    connection.acquire(function (err, con) {
+      if (err) console.log(err.stack)
+      var query = 'delete from agetypes  ' +
+        'where id = ' + req.params.rider
+      con.query(query, function (err, result) {
+        if (err) {
+          console.log(err.stack)
+        } else {
+          con.release()
+          // console.log(result)
+          res.send(result)
+        }
+      })
+    })
+  }
+  this.newRiderAge = function (req, res) {
+    // initialize database connection
+    connection.init()
+    connection.acquire(function (err, con) {
+      if (err) console.log(err.stack)
+      var q = 'insert into agetypes (age, year) values (' +
+        '\'' + req.body.age + '\', ' +
+        req.body.year + ' ' +
+        ')'
+      console.log('rider new', req.body, q)
+      con.query(q, function (err, result) {
+        if (err) {
+          console.log(err.stack)
+        } else {
+          con.release()
+          // console.log(result)
+          res.send(result)
+        }
+      })
+    })
+  }
 }
 
 module.exports = new RiderAges()
